@@ -1,3 +1,4 @@
+import csv
 import random
 from faker import Faker
 
@@ -6,6 +7,9 @@ from faker import Faker
 # from inspect import getsource
 
 def gen_data(nrows=10, ncols=5, titles=None, types=None):
+    """
+    Generate a list of objects with specified rows and cols.
+    """
 
     if titles is not None and types is not None:
         assert len(titles) == len(types)
@@ -37,4 +41,16 @@ def gen_data(nrows=10, ncols=5, titles=None, types=None):
             
         rows.append(row)
     
-    return titles, rows
+    return [titles, *rows]
+
+
+def write_csv(data, file):
+    """
+    Write data list to file.
+    """
+
+    with open(file, 'w') as csvfile:
+        wr = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+        for row in data:
+            wr.writerow(row)
+
