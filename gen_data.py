@@ -54,20 +54,26 @@ def gen_data(nrows=10, ncols=5, titles=None, types=None):
 
         row = []
         for j in range(ncols):
+
+            if type(types[j]) is tuple:
+                col_type, col_len = types[j]
+            else:
+                col_len = 0
+                col_type = types[j]
             
-            if types[j] == CsvDataType.NULL:
+            if col_type == CsvDataType.NULL:
                 col = None
-            elif types[j] == CsvDataType.BOOL:
+            elif col_type == CsvDataType.BOOL:
                 col = random.choice(bool_vals)
-            elif types[j] == CsvDataType.INT:
+            elif col_type == CsvDataType.INT:
                 col = random.randint(0, MAX_INT_VALUE + 1)
-            elif types[j] == CsvDataType.STRING:
-                col = fake.name()
-            elif types[j] == CsvDataType.FLOAT:
+            elif col_type == CsvDataType.STRING:
+                col = fake.text(col_len) if col_len else fake.name()
+            elif col_type == CsvDataType.FLOAT:
                 col = random.random() * MAX_FLOAT_VALUE
-            elif types[j] == CsvDataType.DATE:
+            elif col_type == CsvDataType.DATE:
                 col = today.date() + DT.timedelta(days=-random.random() * MAX_DATE_RANGE)
-            elif types[j] == CsvDataType.DATETIME:
+            elif col_type == CsvDataType.DATETIME:
                 col = today + DT.timedelta(days=-random.random() * MAX_DATE_RANGE)
             else:
                 raise Exception(f"Unsupported type: {types[j]}")
@@ -92,14 +98,19 @@ def write_csv(data, file):
 
 def run():
 
+    # Text column definition
+    TEXT_COL = (CsvDataType.STRING, 40)
+
+    # Define column types
     cols = [
-        *([CsvDataType.NULL]*1),
-        *([CsvDataType.BOOL]*1),
-        *([CsvDataType.INT]*3),
-        *([CsvDataType.STRING]*3),
-        *([CsvDataType.FLOAT]*3),
-        *([CsvDataType.DATE]*3),
-        *([CsvDataType.DATETIME]*3),
+        # *([CsvDataType.NULL]*1),
+        # *([CsvDataType.BOOL]*1),
+        # *([CsvDataType.INT]*1),
+        # *([CsvDataType.STRING]*2),
+        *([TEXT_COL]*2),
+        *([CsvDataType.FLOAT]*2),
+        # *([CsvDataType.DATE]*2),
+        # *([CsvDataType.DATETIME]*2),
     ]
 
     rows = gen_data(10, len(cols), None, cols)
