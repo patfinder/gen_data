@@ -3,6 +3,7 @@
 ## Todo
 
 - Add unit-test
+- Add option for writing output to console.
 - Add --skips param for skipping a specified number of rows.
 
 ## Introduction
