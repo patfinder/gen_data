@@ -43,6 +43,8 @@ def gen_data(nrows=10, ncols=5, titles=None, types=None):
 
     if titles is None:
         titles = [f'col_{i}' for i in range(1, ncols + 1)]
+    # add ID column
+    titles.insert(0, 'col_0')
 
     if types is None:
         types = [1 for i in range(ncols)]
@@ -51,9 +53,9 @@ def gen_data(nrows=10, ncols=5, titles=None, types=None):
     fake = Faker()
     today = DT.datetime.now()
 
-    for _ in range(nrows):
+    for i in range(nrows):
 
-        row = []
+        row = [i + 1]
         for j in range(ncols):
 
             if type(types[j]) is tuple:
