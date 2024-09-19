@@ -44,7 +44,7 @@ def gen_data(nrows=10, ncols=5, titles=None, types=None):
     if titles is None:
         titles = [f'col_{i}' for i in range(1, ncols + 1)]
     # add ID column
-    titles.insert(0, 'col_0')
+    titles.insert(0, 'id')
 
     if types is None:
         types = [1 for i in range(ncols)]
@@ -137,23 +137,35 @@ def main():
     parser.add_argument('csvfile')
     parser.add_argument('-r', '--rows', required=True, type=int, help='number of rows')
     parser.add_argument('-c', '--columns', required=False, help='List of colume type, in this format: "t t t:n ..." Where t is type (number), n is column length.')
+    parser.add_argument('-t', '--titles', required=False, type=str, help='List of column titles')
 
+    # Parse params
     args = parser.parse_args()
-    col_args = args.columns.split()
+
+    # colume types param
+    col_args = args.columns and args.columns.split(',') or None
     cols = []
     for c in col_args:
         if ':' in c:
             c = c.split(':')
-            cols.append((CsvDataType(int(c[0])), int(c[1])))
+            col_type, col_len = CsvDataType(int(c[0])), int(c[1])
+            if col_type == CsvDataType.STRING and col_len < 5:
+                print('Mininum string length is 5.')
+                exit()
+            cols.append((col_type, col_len))
         else:
             cols.append(CsvDataType(int(c)))
 
+    # colume titles param
+    titles = args.titles and args.titles.split(',') or None
+
     # generate data
-    rows = gen_data(args.rows, len(cols), None, cols)
+    rows = gen_data(args.rows, len(cols), titles or None, cols or None)
 
     # save csv
     write_csv(rows, args.csvfile)
 
 
 if __name__ == '__main__':
+    # test()
     main()
