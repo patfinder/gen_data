@@ -1,3 +1,4 @@
+import argparse
 import csv
 from enum import Enum
 import random
@@ -96,21 +97,21 @@ def write_csv(data, file):
             wr.writerow(row)
 
 
-def run():
+def test():
 
     # Text column definition
     TEXT_COL = (CsvDataType.STRING, 40)
 
     # Define column types
     cols = [
-        # *([CsvDataType.NULL]*1),
-        # *([CsvDataType.BOOL]*1),
-        # *([CsvDataType.INT]*1),
-        # *([CsvDataType.STRING]*2),
+        *([CsvDataType.NULL]*1),
+        *([CsvDataType.BOOL]*1),
+        *([CsvDataType.INT]*1),
+        *([CsvDataType.STRING]*2),
         *([TEXT_COL]*2),
         *([CsvDataType.FLOAT]*2),
-        # *([CsvDataType.DATE]*2),
-        # *([CsvDataType.DATETIME]*2),
+        *([CsvDataType.DATE]*2),
+        *([CsvDataType.DATETIME]*2),
     ]
 
     rows = gen_data(10, len(cols), None, cols)
@@ -118,4 +119,39 @@ def run():
     return rows
 
 
-run()
+def main():
+    parser = argparse.ArgumentParser(
+                        prog='gen_data',
+                        description='What the program does',
+                        epilog='''List of supported types: 
+        BOOL=1
+        INT=2
+        STRING=3
+        FLOAT=4
+        DATE=5
+        DATETIME=6                        
+    ''')
+
+    parser.add_argument('csvfile')
+    parser.add_argument('-r', '--rows', required=True, type=int, help='number of rows')
+    parser.add_argument('-c', '--columns', required=False, help='List of colume type, in this format: "t t t:n ..." Where t is type (number), n is column length.')
+
+    args = parser.parse_args()
+    col_args = args.columns.split()
+    cols = []
+    for c in col_args:
+        if ':' in c:
+            c = c.split(':')
+            cols.append((CsvDataType(int(c[0])), int(c[1])))
+        else:
+            cols.append(CsvDataType(int(c)))
+
+    # generate data
+    rows = gen_data(args.rows, len(cols), None, cols)
+
+    # save csv
+    write_csv(rows, args.csvfile)
+
+
+if __name__ == '__main__':
+    main()
