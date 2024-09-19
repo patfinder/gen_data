@@ -124,7 +124,7 @@ def test():
 def main():
     parser = argparse.ArgumentParser(
                         prog='gen_data',
-                        description='What the program does',
+                        description='Generate CSV file with specfied number of rows, and column types.',
                         epilog='''List of supported types: 
         BOOL=1
         INT=2
