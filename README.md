@@ -22,6 +22,8 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -r ROWS, --rows ROWS  number of rows
+  -s SKIP_ROWS, --skip-rows SKIP_ROWS 
+                        number of rows to skip
   -c COLUMNS, --columns COLUMNS
                         List of colume type, in this format: "t t t:n ..." Where t is type (number), n is column length.
   -t TITLES, --titles TITLES
